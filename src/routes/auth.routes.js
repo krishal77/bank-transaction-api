@@ -5,4 +5,5 @@ import { userRegisterController,
 const router=Router();
 
 router.route("/register").post(userRegisterController);
+router.route("/login").post(loginController)
 export default router;

@@ -35,9 +35,13 @@ const createdUser= await User.findById(user._id).select(
   if(!createdUser){
     throw new ApiError(500,"something went wrong while creating user")
   }
+  const options={
+    httpOnly:true,//only modifiable via server
+    secure:true
+}
   const token= await generateAccessToken(user._id);
 
-  return res.status(201).cookie("token",token).json(
+  return res.status(201).cookie("token",token,options).json(
     new ApiResponse(200,createdUser,token,"User Registered Successfully!!!")
   )
 
@@ -45,18 +49,30 @@ const createdUser= await User.findById(user._id).select(
 })
 
 const loginController= asyncHandler(async(req,res)=>{
-    const user= await User.findOne({email})
+    const{email,password}=req.body
+    if(!email){
+    throw new ApiError(400,"email is required");
+ }
+    const user= await User.findOne({email}).select("+password")
     if(!user){
         throw new ApiError(401,"User not found")
     }
     const isPasswordCorrect=await user.isPasswordCorrect(password);
-    if(!isPasswordValid){
+    if(!isPasswordCorrect){
     throw new ApiError(401,"user dosent credentials");
  }
- const token=await generateAccessToken(user_.id);
+ const loggedInUser=await User.findById(user._id);
 
-  return res.status(200).cookie("token",token).json(
-    new ApiResponse(200,user,token,"User loggedIn Successfully!!!"))
+ const token=await generateAccessToken(user._id);
+
+const options={
+    httpOnly:true,//only modifiable via server
+    secure:true
+}
+  return res.status(200).cookie("token",token,options).json(
+    new ApiResponse(200,{
+        user: loggedInUser,token
+    },"User loggedIn Successfully!!!"))
 })
 
 
