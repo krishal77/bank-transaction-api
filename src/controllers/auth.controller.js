@@ -44,6 +44,20 @@ const createdUser= await User.findById(user._id).select(
 
 })
 
+const loginController= asyncHandler(async(req,res)=>{
+    const user= await User.findOne({email})
+    if(!user){
+        throw new ApiError(401,"User not found")
+    }
+    const isPasswordCorrect=await user.isPasswordCorrect(password);
+    if(!isPasswordValid){
+    throw new ApiError(401,"user dosent credentials");
+ }
+ const token=await generateAccessToken(user_.id);
+
+  return res.status(200).cookie("token",token).json(
+    new ApiResponse(200,user,token,"User loggedIn Successfully!!!"))
+})
 
 
-export {userRegisterController}
+export {userRegisterController,loginController}
