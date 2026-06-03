@@ -3,12 +3,12 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken";
-
+import {sendRegistrationEmail} from "../services/email.services.js"
 const generateAccessToken=async(userId)=>{
     try{
         const user=await User.findById(userId);
         const accessToken=await user.generateAccessToken();
-        return{accessToken}
+        return accessToken;
     }catch(error){
         throw new ApiError(500,"something went wrong while generating token")
     }
@@ -41,10 +41,13 @@ const createdUser= await User.findById(user._id).select(
 }
   const token= await generateAccessToken(user._id);
 
+    await sendRegistrationEmail(user.email,user.name)
+
   return res.status(201).cookie("token",token,options).json(
     new ApiResponse(200,createdUser,token,"User Registered Successfully!!!")
   )
 
+  
 
 })
 
