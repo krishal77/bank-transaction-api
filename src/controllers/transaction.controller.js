@@ -34,7 +34,21 @@ const createTransaction = asyncHandler(async(req,res)=>{
 
 
 })
+const isTransactionAlreadyExists= await transactionModel.findOne({idempotencyKey:idempotencyKey})
 
+if(isTransactionAlreadyExists){
+  if(isTransactionAlreadyExists.status=="COMPLETED"){
+    return res.status(200).json(new ApiResponse(200,{},"transaction already completed"));
+  }if(isTransactionAlreadyExists.status=="PENDING"){
+     return res.status(200).json(new ApiResponse(200,{},"transaction is proessing"));
+  }
+  if(isTransactionAlreadyExists.status=="FAILED"){
+     return res.status(500).json(new ApiResponse(500,{},"transaction processing Failed"));
+  }
+  if(isTransactionAlreadyExists.status=="REVERSED"){
+     return res.status(500).json(new ApiResponse(500,{},"transaction was reversed. Retry!"));
+  }
+}
 
 
 
