@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import {sendRegistrationEmail,
   sendTransactionEmail,
 sendTransactionFailed} from "../services/email.services.js";
-
+//controller to create transaction
 const createTransaction = asyncHandler(async(req,res)=>{
 
     const {fromAccount,toAccount,amount,idempotencyKey}=req.body;
@@ -34,6 +34,7 @@ const createTransaction = asyncHandler(async(req,res)=>{
 
 
 })
+
 const isTransactionAlreadyExists= await transactionModel.findOne({idempotencyKey:idempotencyKey})
 
 if(isTransactionAlreadyExists){
