@@ -49,8 +49,11 @@ if(isTransactionAlreadyExists){
   if(isTransactionAlreadyExists.status=="REVERSED"){
      return res.status(500).json(new ApiResponse(500,{},"transaction was reversed. Retry!"));
   }
+  if(fromUserAccount.status != "ACTIVE" || toUserAccount.status != "ACTIVE"){
+    return res.status(400).json(new ApiResponse(400,{},"both from and to account must be active to process transaction"));
+  }
 }
 
 
 
-export {createTransaction}
+export {createTransaction,isTransactionAlreadyExists}
