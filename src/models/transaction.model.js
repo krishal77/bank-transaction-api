@@ -14,8 +14,8 @@ const transactionModel= new Schema({
         index:true
     },
     status:{
-        typr:String,
-        emun:{
+        type:String,
+        enum:{
             values:["PENDING","COMPLETED","FAILED","REVERSED"],
             message:"Status can be either PENDING,COMPLETED,FAILED or REVERSED",
         },
