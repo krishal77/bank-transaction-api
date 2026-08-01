@@ -23,6 +23,7 @@ const ledgerSchema= new Schema({
         immutable:true,
     },
     type:{
+        type:String,
         enum:{
             values:["CREDIT","DEBIT"],
             message:"type can be either credit or debit"
